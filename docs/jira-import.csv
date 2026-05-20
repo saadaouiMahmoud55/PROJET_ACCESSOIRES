@@ -1,0 +1,9 @@
+Summary,Issue Type,Description,Priority,Labels,Status
+En tant qu'utilisateur, je veux consulter la liste des produits,Story,Page catalogue produit avec affichage responsive,High,frontend,To Do
+Filtrer par catégorie et marque,Story,Ajout de filtres sur le catalogue,Medium,frontend,To Do
+Ajouter un accessoire,Story,Formulaire d'administration pour créer un accessoire,High,backend,To Do
+Modifier un accessoire,Story,Workflow d'édition d'un accessoire existant,Medium,backend,To Do
+Supprimer un accessoire,Story,Supprimer un accessoire depuis l'interface admin,Medium,backend,To Do
+Déployer PostgreSQL et Redis via Docker Compose,Task,Configurer la stack PostgreSQL/Redis dans docker-compose,High,infra,Done
+Tests unitaires et d'intégration,Task,Ajouter des tests backend JUnit/Mockito et Spring Boot,High,quality,To Do
+Tests E2E Cypress et Selenium,Task,Ajout de tests end-to-end pour le frontend,Medium,quality,To Do

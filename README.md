@@ -68,6 +68,46 @@ ng serve
 - **Backend API** : http://localhost:8081/api
 - **Documentation API** : http://localhost:8081/swagger-ui.html
 
+## Méthodologie Scrum & Jira
+Ce projet suit une organisation agile inspirée de Scrum avec une simulation Jira dans `docs/JIRA_BACKLOG.md`.
+
+- Epics, User Stories et tâches clairement définies.
+- Sprints de 2 semaines pour chaque ensemble de fonctionnalités.
+- Board Jira simulé avec colonnes `To Do`, `In Progress`, `Done`.
+- Export CSV possible pour importer les issues dans Jira.
+
+Voir aussi : `docs/JIRA_BACKLOG.md`.
+
+## Tests
+
+### Tests unitaires backend
+```bash
+cd backend
+mvn test
+```
+
+### Tests d'intégration backend
+```bash
+cd backend
+mvn -Dtest=*IntegrationTest test
+```
+
+### Tests E2E frontend Cypress
+```bash
+cd frontend
+npm install
+npm run cypress:open
+```
+
+### Tests Selenium frontend
+```bash
+cd backend
+mvn -Dtest=FrontEndSeleniumTest test
+```
+
+### Remarque
+Le test Selenium attend que l'application frontend soit accessible sur `http://localhost:4200`.
+
 ## Les Principales Fonctionnalités
 
 ### Gestion des Accessoires
