@@ -1,0 +1,263 @@
+﻿<div class="store-shell">
+  <header class="hero-header">
+    <div class="header-top">
+      <div class="brand-logo">
+        <div class="brand-mark">BP</div>
+        <div>
+          <span class="brand-title">Boutique Accessoires</span>
+          <small>Smartphone, tablette & audio</small>
+        </div>
+      </div>
+
+      <div class="search-block">
+        <input type="text" placeholder="Rechercher un produit" [(ngModel)]="searchQuery">
+        <button type="button" (click)="loadData()">🔍</button>
+      </div>
+
+      <div class="header-actions">
+        <button class="action-pill cart-pill" type="button" (click)="viewCart()">🛒 Panier <span>{{ cartCount }}</span></button>
+      </div>
+    </div>
+
+    <nav class="main-nav">
+      <a href="#" class="nav-link" [class.active]="selectedNav === 'Accueil'" (click)="selectNav('Accueil', $event)">Accueil</a>
+      <a href="#" class="nav-link" [class.active]="selectedNav === 'Smartphone'" (click)="selectNav('Smartphone', $event)">Smartphone</a>
+      <a href="#" class="nav-link" [class.active]="selectedNav === 'Tablettes'" (click)="selectNav('Tablettes', $event)">Tablettes</a>
+      <a href="#" class="nav-link" [class.active]="selectedNav === 'SmartWatch'" (click)="selectNav('SmartWatch', $event)">SmartWatch</a>
+      <a href="#" class="nav-link" [class.active]="selectedNav === 'Audio'" (click)="selectNav('Audio', $event)">Audio</a>
+      <a href="#" class="nav-link" [class.active]="selectedNav === 'Gamer'" (click)="selectNav('Gamer', $event)">Gamer</a>
+      <a href="#" class="nav-link" [class.active]="selectedNav === 'Accessoires'" (click)="selectNav('Accessoires', $event)">Accessoires</a>
+      <a href="#" class="nav-link" [class.active]="selectedNav === 'Promotions'" (click)="selectNav('Promotions', $event)">Promotions</a>
+    </nav>
+  </header>
+
+  <section class="promo-banner">
+    <div>
+      <span>Nouveauté</span>
+      <h1>Accessoires premium pour smartphone</h1>
+      <p>Découvrez une sélection d'accessoires tendance, performants et compatibles avec toutes les grandes marques.</p>
+      <button (click)="clearFilters()">Voir la sélection</button>
+      <div class="quick-filter-buttons">
+        <button class="secondary-btn" type="button" (click)="filterSmartphoneBrand('Apple')">iPhone</button>
+        <button class="secondary-btn" type="button" (click)="filterSmartphoneBrand('Samsung')">Samsung</button>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="hero-card">
+        <div class="hero-image"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="store-body">
+    <aside class="filters-column">
+      <div class="panel">
+        <h2>Filtres</h2>
+        <button class="clear-link" (click)="clearFilters()">Réinitialiser</button>
+        <div class="filter-group">
+          <h3>Catégorie</h3>
+          <button class="chip" [class.active]="!selectedCategoryId" (click)="selectCategory(null)">Tous</button>
+          <button class="chip" *ngFor="let category of categories" [class.active]="selectedCategoryId === category.id" (click)="selectCategory(category.id)">{{ category.name }}</button>
+        </div>
+
+        <div class="filter-group">
+          <h3>Marque</h3>
+          <select [(ngModel)]="selectedBrandId">
+            <option [ngValue]="null">Toutes les marques</option>
+            <option *ngFor="let brand of brands" [ngValue]="brand.id">{{ brand.name }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <h3>Type</h3>
+          <select [(ngModel)]="selectedType">
+            <option value="">Tous les types</option>
+            <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <h3>RAM / STOCKAGE</h3>
+          <div class="filter-list">
+            <label class="filter-item" *ngFor="let storage of storageOptions">
+              <input type="checkbox" [checked]="selectedStorage.includes(storage)" (change)="toggleStorage(storage)">
+              {{ storage }}
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <h3>Couleurs</h3>
+          <div class="filter-list">
+            <label class="filter-item" *ngFor="let color of colorOptions">
+              <input type="checkbox" [checked]="selectedColors.includes(color)" (change)="toggleColor(color)">
+              <span class="color-chip" [ngClass]="{
+                'black': color.toLowerCase().includes('noir'),
+                'white': color.toLowerCase().includes('blanc'),
+                'green': color.toLowerCase().includes('vert') && !color.toLowerCase().includes('menthe'),
+                'light-green': color.toLowerCase().includes('menthe') || color.toLowerCase().includes('clair'),
+                'blue': color.toLowerCase().includes('bleu'),
+                'gray': color.toLowerCase().includes('argent') || color.toLowerCase().includes('shadow') || color.toLowerCase().includes('titane'),
+                'yellow': color.toLowerCase().includes('gold')
+              }"></span>
+              {{ color }}
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-group stock-filter">
+          <label>
+            <input type="checkbox" [(ngModel)]="inStockOnly">
+            Disponible uniquement
+          </label>
+        </div>
+      </div>
+    </aside>
+
+    <main class="products-column">
+      <div class="products-header">
+        <div>
+          <p class="mega-text">{{ totalProductsCount }} produit(s) trouvés</p>
+          <p class="sub-text">Parcourez les meilleures offres en stock ou sélectionnez un filtre pour affiner votre recherche.</p>
+        </div>
+        <div class="product-sort">
+          <label>Trier par</label>
+          <select [(ngModel)]="sortOption">
+            <option value="popular">Popularité</option>
+            <option value="priceAsc">Prix : croissant</option>
+            <option value="priceDesc">Prix : décroissant</option>
+          </select>
+        </div>
+      </div>
+
+      <div *ngIf="orderConfirmed" class="success-banner">{{ successMessage }}</div>
+
+      <section class="checkout-panel" *ngIf="showCartSummary">
+        <div class="checkout-head">
+          <h2>Panier ({{ cartCount }} article(s))</h2>
+          <button class="close-cart" type="button" (click)="closeCart()">Fermer</button>
+        </div>
+        <div *ngIf="cartCount === 0" class="empty-state">
+          <p>Votre panier est vide.</p>
+        </div>
+        <div *ngIf="cartCount > 0">
+          <div class="cart-items">
+            <div class="cart-row" *ngFor="let item of cartSummary">
+              <span>{{ item.quantity }} × {{ item.accessory.name }}</span>
+              <span>{{ item.accessory.price | number:'1.0-0' }} DT</span>
+            </div>
+          </div>
+          <div class="cart-total">Total : {{ cartTotal | number:'1.0-0' }} DT</div>
+          <div class="payment-methods">
+            <h3>Mode de paiement</h3>
+            <label class="payment-option">
+              <input type="radio" name="paymentMethod" value="online" [(ngModel)]="paymentMethod">
+              Paiement en ligne
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="paymentMethod" value="cash" [(ngModel)]="paymentMethod">
+              Paiement sur place à la livraison
+            </label>
+          </div>
+          <div class="delivery-note">
+            Livraison express en 24h<br>
+            Paiement sécurisé et garantie de satisfaction.
+          </div>
+          <button class="checkout-btn" type="button" (click)="confirmOrder()">Valider la commande</button>
+        </div>
+      </section>
+
+      <div *ngIf="error" class="alert-banner">{{ error }}</div>
+
+      <div class="card-grid">
+        <article *ngFor="let product of filteredAccessories" class="product-card">
+          <div class="product-visual">
+            <img [src]="getImageUrl(product)" [alt]="product.name" (error)="setImageFallback($event)">
+            <div class="product-thumbs" *ngIf="getSecondaryImageUrl(product) as secondImage">
+              <img [src]="secondImage" [alt]="product.name + ' image 2'" class="product-thumb" (error)="setImageFallback($event)">
+            </div>
+          </div>
+          <div class="product-copy">
+            <span class="tag">{{ product.category?.name || 'Accessoire' }}</span>
+            <h3>{{ product.name }}</h3>
+            <p class="brand">{{ product.brand?.name || 'Marque libre' }}</p>
+            <div class="price-row">
+              <strong>{{ product.price | number:'1.0-0' }} DT</strong>
+              <span [class.out-of-stock]="product.stock === 0">{{ product.stock > 0 ? product.stock + ' en stock' : 'Rupture de stock' }}</span>
+            </div>
+            <p class="product-type">Type : {{ product.type }}</p>
+            <div class="product-actions">
+              <button class="buy-btn" type="button" [disabled]="product.stock === 0" (click)="addToCart(product)">Ajouter au panier</button>
+              <button class="edit-btn" type="button" (click)="modifyProduct(product)">Modifier</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div *ngIf="filteredAccessories.length === 0" class="empty-state">
+        <h2>Aucun produit ne correspond à votre recherche.</h2>
+        <p>Essayez de modifier les filtres ou la barre de recherche.</p>
+      </div>
+
+      <!-- Galerie retirée — la page d'accueil affiche désormais tous les produits -->
+
+    </main>
+  </section>
+
+  <section class="newsletter-block">
+    <div class="newsletter-card">
+      <div>
+        <h2>S'INSCRIRE AUX NEWSLETTERS</h2>
+        <p>Inscrivez-vous à la newsletter Mytek</p>
+        <div class="newsletter-form">
+          <input type="email" placeholder="Saisissez votre email">
+          <button type="button">SOUSCRIRE</button>
+        </div>
+      </div>
+      <div class="payment-icons">
+        <span class="logo cash">CASH à la Livraison</span>
+        <span class="logo visa">VISA</span>
+        <span class="logo mastercard">MasterCard</span>
+        <span class="logo cib">CIB</span>
+        <span class="logo verified">Verified by VISA</span>
+      </div>
+    </div>
+  </section>
+
+    <footer class="page-footer">
+      <div class="footer-map-banner">
+        <h3>Où nous trouver</h3>
+        <div class="map-frame">
+          <iframe
+            src="https://maps.google.com/maps?q=17%20Rue%20Energie%20Solaire%20Z.I.%20Charguia%201%2C%20Tunis%202035&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Carte Saadaoui Phone"></iframe>
+        </div>
+      </div>
+      <div class="footer-grid footer-grid-3">
+        <div>
+          <h3>Service client</h3>
+          <p>Échange dans 48h</p>
+          <p>Service clientèle</p>
+          <p>À propos de nous</p>
+        </div>
+        <div>
+          <h3>Livraison et paiement</h3>
+          <p>Paiement sécurisé en ligne</p>
+          <p>Paiement à la livraison</p>
+          <p>Carte Visa, Mastercard, CIB</p>
+        </div>
+        <div>
+          <h3>Adresse</h3>
+          <p>17 Rue Energie Solaire Z.I. Charguia 1</p>
+          <p>Tunis 2035</p>
+          <p><a href="tel:92816836">92816836</a></p>
+          <p><a href="mailto:Saadaouiphone.tn&#64;gmail.com">Saadaouiphone.tn&#64;gmail.com</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Saadaoui Phone - Propulsé par TikTak PRO. Tous droits réservés.</p>
+      </div>
+    </footer>
+  </div>
